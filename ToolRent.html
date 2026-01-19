@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolRent - Location d'Outils en Île-de-France</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --secondary: #004E89;
+            --dark: #1A1A2E;
+            --light: #F8F9FA;
+            --accent: #FFD23F;
+            --shadow: rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            color: var(--dark);
+            overflow-x: hidden;
+            background: var(--light);
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 5%;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Page d'accueil */
+        .hero {
+            height: 90vh;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            animation: moveGrid 20s linear infinite;
+        }
+
+        @keyframes moveGrid {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+        }
+
+        .hero-content {
+            text-align: center;
+            color: white;
+            z-index: 1;
+            max-width: 900px;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 6rem;
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+            letter-spacing: 3px;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2.5rem;
+            font-weight: 400;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .cta-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1.2rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(255, 107, 53, 0.6);
+        }
+
+        .features {
+            padding: 5rem 5%;
+            background: var(--light);
+        }
+
+        .features-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 5px solid var(--primary);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .feature-card h3 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        /* Catalogue d'outils */
+        .tools-section {
+            padding: 3rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .tools-section h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 4rem;
+            color: var(--dark);
+            margin-bottom: 3rem;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .tool-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-image::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: moveStripes 20s linear infinite;
+        }
+
+        @keyframes moveStripes {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .tool-info {
+            padding: 1.5rem;
+        }
+
+        .tool-info h3 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .tool-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        /* Page de réservation */
+        .booking-section {
+            padding: 3rem 5%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .booking-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .booking-container h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3rem;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+        }
+
+        .tool-preview {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            padding: 2rem;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .tool-preview h3 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Work Sans', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .price-display {
+            background: var(--accent);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin: 2rem 0;
+            box-shadow: 0 5px 20px rgba(255, 210, 63, 0.3);
+        }
+
+        .price-display h3 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .price-display .amount {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--secondary);
+            font-family: 'Bebas Neue', cursive;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1.2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            background: #ff5722;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 1.2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-secondary:hover {
+            background: #003d6b;
+            transform: translateY(-2px);
+        }
+
+        /* Page de paiement */
+        .payment-section {
+            padding: 3rem 5%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .payment-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .order-summary {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--primary);
+        }
+
+        .order-summary h3 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .summary-total {
+            border-top: 3px solid var(--primary);
+            padding-top: 1rem;
+            margin-top: 1rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .confirmation {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .confirmation.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .confirmation-icon {
+            font-size: 5rem;
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+
+        .confirmation h2 {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 3rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">ToolRent</div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')">Accueil</a></li>
+                <li><a href="#" onclick="showPage('catalogue')">Catalogue</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page d'accueil -->
+    <div id="home" class="page active">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Location d'Outils Professionnels</h1>
+                <p>Tout l'équipement dont vous avez besoin pour vos travaux en Île-de-France</p>
+                <button class="cta-button" onclick="showPage('catalogue')">Découvrir nos outils</button>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Service en Île-de-France</h3>
+                    <p>Nous couvrons tous les départements de l'Île-de-France : Paris (75), Seine-et-Marne (77), Yvelines (78), Essonne (91), Hauts-de-Seine (92), Seine-Saint-Denis (93), Val-de-Marne (94) et Val-d'Oise (95).</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Outils Professionnels</h3>
+                    <p>Notre gamme d'outils professionnels répond à tous vos besoins : construction, rénovation, jardinage et plus encore. Matériel entretenu et contrôlé régulièrement.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Tarifs Flexibles</h3>
+                    <p>Location à la journée, à la semaine ou au mois. Des tarifs dégressifs adaptés à la durée de votre location pour optimiser votre budget travaux.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Page Catalogue -->
+    <div id="catalogue" class="page">
+        <section class="tools-section">
+            <h2>Notre Catalogue d'Outils</h2>
+            <div class="tools-grid" id="toolsGrid"></div>
+        </section>
+    </div>
+
+    <!-- Page Réservation -->
+    <div id="booking" class="page">
+        <section class="booking-section">
+            <div class="booking-container">
+                <h2>Réservation</h2>
+                <div class="tool-preview" id="toolPreview"></div>
+                
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label for="duration">Durée de location :</label>
+                        <select id="duration" onchange="updatePrice()">
+                            <option value="1">1 jour</option>
+                            <option value="3">3 jours</option>
+                            <option value="7">1 semaine</option>
+                            <option value="14">2 semaines</option>
+                            <option value="30">1 mois</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="startDate">Date de début :</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+
+                    <div class="price-display">
+                        <h3>Prix Total</h3>
+                        <div class="amount" id="totalPrice">0€</div>
+                    </div>
+
+                    <button type="button" class="btn-primary" onclick="proceedToCheckout()">Réserver</button>
+                    <button type="button" class="btn-secondary" onclick="showPage('catalogue')">Retour au catalogue</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <!-- Page Paiement -->
+    <div id="payment" class="page">
+        <section class="payment-section">
+            <div class="payment-container">
+                <h2 style="font-family: 'Bebas Neue', cursive; font-size: 3rem; margin-bottom: 2rem; letter-spacing: 2px;">Finaliser la commande</h2>
+                
+                <div class="order-summary" id="orderSummary"></div>
+
+                <form id="paymentForm">
+                    <h3 style="font-family: 'Bebas Neue', cursive; font-size: 2rem; margin-bottom: 1.5rem; letter-spacing: 1px;">Vos coordonnées</h3>
+                    
+                    <div class="form-group">
+                        <label for="fullName">Nom complet :</label>
+                        <input type="text" id="fullName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email :</label>
+                        <input type="email" id="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Téléphone :</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Adresse :</label>
+                        <input type="text" id="address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">Ville :</label>
+                        <input type="text" id="city" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="postalCode">Code postal :</label>
+                        <input type="text" id="postalCode" pattern="[0-9]{5}" required>
+                    </div>
+
+                    <h3 style="font-family: 'Bebas Neue', cursive; font-size: 2rem; margin: 2rem 0 1.5rem; letter-spacing: 1px;">Informations de paiement</h3>
+
+                    <div class="form-group">
+                        <label for="cardNumber">Numéro de carte :</label>
+                        <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="expiryDate">Date d'expiration :</label>
+                            <input type="text" id="expiryDate" placeholder="MM/AA" maxlength="5" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cvv">CVV :</label>
+                            <input type="text" id="cvv" placeholder="123" maxlength="3" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Confirmer le paiement</button>
+                    <button type="button" class="btn-secondary" onclick="showPage('booking')">Retour</button>
+                </form>
+
+                <div class="confirmation" id="confirmation">
+                    <div class="confirmation-icon">✓</div>
+                    <h2>Réservation confirmée !</h2>
+                    <p style="font-size: 1.2rem; margin-bottom: 2rem;">Merci pour votre commande. Vous allez recevoir un email de confirmation avec tous les détails.</p>
+                    <button class="btn-primary" onclick="resetAndGoHome()">Retour à l'accueil</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Base de données des outils
+        const tools = [
+            { id: 1, name: 'Perceuse électrique', icon: '🔨', pricePerDay: 15, description: 'Perceuse professionnelle 850W' },
+            { id: 2, name: 'Bétonnière', icon: '🏗️', pricePerDay: 45, description: 'Bétonnière 140L électrique' },
+            { id: 3, name: 'Tournevis électrique', icon: '🔧', pricePerDay: 12, description: 'Visseuse sans fil 18V' },
+            { id: 4, name: 'Meuleuse d\'angle', icon: '⚙️', pricePerDay: 18, description: 'Meuleuse 125mm 850W' },
+            { id: 5, name: 'Scie circulaire', icon: '⚡', pricePerDay: 22, description: 'Scie circulaire 1400W' },
+            { id: 6, name: 'Ponceuse orbitale', icon: '🔄', pricePerDay: 14, description: 'Ponceuse 280W' },
+            { id: 7, name: 'Marteau-piqueur', icon: '💥', pricePerDay: 55, description: 'Perforateur 1500W' },
+            { id: 8, name: 'Échafaudage mobile', icon: '🪜', pricePerDay: 35, description: 'Échafaudage 2m hauteur' },
+            { id: 9, name: 'Compresseur', icon: '💨', pricePerDay: 28, description: 'Compresseur 50L 2CV' },
+        ];
+
+        let currentTool = null;
+        let currentBooking = {};
+
+        // Initialiser le catalogue
+        function initCatalogue() {
+            const grid = document.getElementById('toolsGrid');
+            grid.innerHTML = tools.map(tool => `
+                <div class="tool-card" onclick="selectTool(${tool.id})">
+                    <div class="tool-image">
+                        <span style="position: relative; z-index: 1;">${tool.icon}</span>
+                    </div>
+                    <div class="tool-info">
+                        <h3>${tool.name}</h3>
+                        <p style="color: #666; margin-bottom: 0.5rem;">${tool.description}</p>
+                        <div class="tool-price">À partir de ${tool.pricePerDay}€/jour</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Sélectionner un outil
+        function selectTool(toolId) {
+            currentTool = tools.find(t => t.id === toolId);
+            document.getElementById('toolPreview').innerHTML = `
+                <div style="font-size: 4rem; margin-bottom: 1rem;">${currentTool.icon}</div>
+                <h3>${currentTool.name}</h3>
+                <p style="font-size: 1.1rem; margin-top: 0.5rem;">${currentTool.description}</p>
+            `;
+            
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('startDate').setAttribute('min', today);
+            document.getElementById('startDate').value = today;
+            
+            updatePrice();
+            showPage('booking');
+        }
+
+        // Mettre à jour le prix
+        function updatePrice() {
+            if (!currentTool) return;
+            
+            const duration = parseInt(document.getElementById('duration').value);
+            let price = currentTool.pricePerDay * duration;
+            
+            // Réduction pour les longues durées
+            if (duration >= 30) {
+                price *= 0.7; // 30% de réduction
+            } else if (duration >= 14) {
+                price *= 0.8; // 20% de réduction
+            } else if (duration >= 7) {
+                price *= 0.85; // 15% de réduction
+            }
+            
+            document.getElementById('totalPrice').textContent = Math.round(price) + '€';
+            currentBooking.price = Math.round(price);
+            currentBooking.duration = duration;
+        }
+
+        // Passer à la page de paiement
+        function proceedToCheckout() {
+            const startDate = document.getElementById('startDate').value;
+            if (!startDate) {
+                alert('Veuillez sélectionner une date de début');
+                return;
+            }
+            
+            currentBooking.startDate = startDate;
+            currentBooking.tool = currentTool.name;
+            
+            // Calculer la date de fin
+            const start = new Date(startDate);
+            const end = new Date(start);
+            end.setDate(end.getDate() + currentBooking.duration);
+            
+            document.getElementById('orderSummary').innerHTML = `
+                <h3>Récapitulatif de commande</h3>
+                <div class="summary-line">
+                    <span>Outil :</span>
+                    <strong>${currentTool.name}</strong>
+                </div>
+                <div class="summary-line">
+                    <span>Durée :</span>
+                    <strong>${currentBooking.duration} jour(s)</strong>
+                </div>
+                <div class="summary-line">
+                    <span>Du :</span>
+                    <strong>${new Date(startDate).toLocaleDateString('fr-FR')}</strong>
+                </div>
+                <div class="summary-line">
+                    <span>Au :</span>
+                    <strong>${end.toLocaleDateString('fr-FR')}</strong>
+                </div>
+                <div class="summary-line summary-total">
+                    <span>Total :</span>
+                    <strong>${currentBooking.price}€</strong>
+                </div>
+            `;
+            
+            showPage('payment');
+        }
+
+        // Gérer le paiement
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simuler le traitement du paiement
+            setTimeout(() => {
+                document.querySelector('.payment-container form').style.display = 'none';
+                document.querySelector('.order-summary').style.display = 'none';
+                document.querySelector('.payment-container h2').style.display = 'none';
+                document.getElementById('confirmation').classList.add('active');
+            }, 1000);
+        });
+
+        // Formater le numéro de carte
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+
+        // Formater la date d'expiration
+        document.getElementById('expiryDate').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        // Navigation entre les pages
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Réinitialiser et retourner à l'accueil
+        function resetAndGoHome() {
+            currentTool = null;
+            currentBooking = {};
+            document.getElementById('bookingForm').reset();
+            document.getElementById('paymentForm').reset();
+            document.querySelector('.payment-container form').style.display = 'block';
+            document.querySelector('.order-summary').style.display = 'block';
+            document.querySelector('.payment-container h2').style.display = 'block';
+            document.getElementById('confirmation').classList.remove('active');
+            showPage('home');
+        }
+
+        // Initialiser au chargement
+        initCatalogue();
+    </script>
+</body>
+</html>
